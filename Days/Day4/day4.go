@@ -123,7 +123,7 @@ func Run() {
 	}
 	//Add last board
 	bingoBoards = append(bingoBoards, board)
-	
+
 	// Play bingo !!
 	numWinners := 0
 	for _, sNum := range strings.Split(bingoCalls, ",") {
