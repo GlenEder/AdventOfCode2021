@@ -8,8 +8,7 @@ import (
 
 
 func Run() {
-
-	Utils.PrintWithColor(Utils.Cyan, "===Day 5===\n")
+	Utils.PrintDay(5)
 
 	//get input
 	input := Utils.ReadInputToSlice("Days/Day5/input.txt")

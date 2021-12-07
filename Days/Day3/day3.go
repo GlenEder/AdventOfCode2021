@@ -13,7 +13,7 @@ type bitCount struct {
 }
 
 func Run() {
-	Utils.PrintWithColor(Utils.Cyan, "===Day 3===\n")
+	Utils.PrintDay(3)
 	//Read input
 	input := Utils.ReadInputToSlice("Days/Day3/input.txt")
 	//Find number of bits

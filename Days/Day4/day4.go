@@ -88,7 +88,7 @@ func (b bingo) GetUnmarkedSum() int {
 }
 
 func Run() {
-	Utils.PrintWithColor(Utils.Cyan, "===Day 4===\n")
+	Utils.PrintDay(4)
 
 	//get input
 	input := Utils.ReadInputToSlice("Days/Day4/input.txt")

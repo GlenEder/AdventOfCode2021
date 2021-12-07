@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+func PrintDay(day int) {
+	PrintWithColor(Cyan, "===Day " + IntToString(day) + "===\n")
+}
+
 //Check validates the error passed to it and panics if one exists
 //@param e -- error to check
 func Check(e error) {
@@ -12,7 +16,6 @@ func Check(e error) {
 		panic(e)
 	}
 }
-
 
 //Returns int rep of string
 //@param s -- string to convert
