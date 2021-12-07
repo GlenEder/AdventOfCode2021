@@ -5,6 +5,8 @@ import (
 	"strconv"
 )
 
+//PrintDay prints the string ===Day n=== to console in color
+//@param day -- day number to print
 func PrintDay(day int) {
 	PrintWithColor(Cyan, "===Day " + IntToString(day) + "===\n")
 }
@@ -26,6 +28,9 @@ func StringToInt(s string) int {
 	return num
 }
 
+//IntToString converts given int to a string rep of the int
+//@param i -- int to convert
+//@return string rep of int
 func IntToString(i int) string  {
 	return strconv.Itoa(i)
 }
