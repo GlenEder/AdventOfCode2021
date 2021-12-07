@@ -51,3 +51,74 @@ func BinaryStringToFloat(b string) float64 {
 
 	return toReturn
 }
+
+//Calculates the mean of the int slice
+//@param ints -- int slice to calc on
+//@return mean of int slice
+func Mean(ints []int) int {
+	sum := 0
+	for _, n := range ints {
+		sum += n
+	}
+	return sum / len(ints)
+}
+
+//Calculates the mean of the int slice, rounds down
+//@param ints -- int slice to calc on
+//@return mean of int slice
+func LowMean(ints []int) int {
+	sum := 0
+	for _, n := range ints {
+		sum += n
+	}
+	return int(math.Floor(float64(sum) / float64(len(ints))))
+}
+
+//Calculates the mean of the int slice, rounds up
+//@param ints -- int slice to calc on
+//@return mean of int slice
+func HighMean(ints []int) int {
+	sum := 0
+	for _, n := range ints {
+		sum += n
+	}
+	return int(math.Ceil(float64(sum) / float64(len(ints))))
+}
+
+//Finds the median of the integer slice
+//@param ints -- sorted integer slice
+//@return median of slice
+func Median(ints []int) int {
+	length := len(ints)
+	middle := length / 2
+	if length % 2 != 0 {
+		return ints[middle]
+	}
+	return (ints[middle - 1] + ints[middle]) / 2
+}
+
+//AbsInt returns the absolute value of an int
+//@param i -- int to calc abs on
+//@return abs of i
+func AbsInt(i int) int {
+	if i >= 0 { return i }
+	return i * -1
+}
+
+//Returns the lower of two numbers
+//@param a -- first num to compare
+//@param b -- second num to compare
+//@return lower of a and b
+func MinInt(a int, b int) int {
+	if a <= b { return a }
+	return b
+}
+
+//Returns the higher of two numbers
+//@param a -- first num to compare
+//@param b -- second num to compare
+//@return higher of a and b
+func MaxInt(a int, b int) int {
+	if a >= b { return a }
+	return b
+}

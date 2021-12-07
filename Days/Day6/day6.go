@@ -58,7 +58,7 @@ func simDay(lanternfish []int) {
 }
 
 //calcTotal sums the fishes in the slice
-//@param lanternfish -- slice of fish counts 
+//@param lanternfish -- slice of fish counts
 func calcTotal(lanternfish []int) int {
 	toReturn := 0
 	for _, fish := range lanternfish {

@@ -7,6 +7,7 @@ import (
 	"src/Days/Day4"
 	"src/Days/Day5"
 	"src/Days/Day6"
+	"src/Days/Day7"
 	"src/Utils"
 	"time"
 )
@@ -19,5 +20,6 @@ func main() {
 	Day4.Run()
 	Day5.Run()
 	Day6.Run()
+	Day7.Run()
 	Utils.PrintWithColor(Utils.Yellow, "\nTime to compute: " + time.Since(now).String() + "\n")
 }
