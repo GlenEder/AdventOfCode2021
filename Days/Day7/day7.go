@@ -34,7 +34,7 @@ func Run() {
 
 //Calcs the linear fuel cost for part 2
 //@param dist -- distance crab must travel
-//@return total fuel cost 
+//@return total fuel cost
 func part2FuelCost(dist int) int {
 	cost := 0
 	for i := 1; i <= dist; i++ {

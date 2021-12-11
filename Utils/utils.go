@@ -3,6 +3,7 @@ package Utils
 import (
 	"math"
 	"strconv"
+	"strings"
 )
 
 //PrintDay prints the string ===Day n=== to console in color
@@ -121,4 +122,19 @@ func MinInt(a int, b int) int {
 func MaxInt(a int, b int) int {
 	if a >= b { return a }
 	return b
+}
+
+//Finds the number of matching chars between the two strings
+//@param a -- first string
+//@param b -- second string
+//@return number of matching chars
+func NumMatchingChars(a string, b string) int  {
+	matches := 0
+	bChars := []rune(b)
+	for i := range bChars {
+		if strings.Contains(a, string(bChars[i])) {
+			matches++
+		}
+	}
+	return matches
 }

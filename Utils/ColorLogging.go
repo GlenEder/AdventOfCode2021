@@ -31,6 +31,14 @@ func PrintWithColor(c int, s string) {
 	ResetOutputColor()
 }
 
+//Prints provided string in red color
+//@param s -- error to print
+func PrintError(s string) {
+	SetOutputColor(Red)
+	fmt.Printf("%s", s)
+	ResetOutputColor()
+}
+
 //Sets output color in terminal
 //@param c -- color int to use (see const defined at top of utils.go)
 func SetOutputColor(c int)  {
