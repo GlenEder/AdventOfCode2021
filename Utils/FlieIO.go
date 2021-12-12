@@ -2,6 +2,7 @@ package Utils
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -102,4 +103,14 @@ func ReadInputToIntGrid(filepath string, delimit string) [][]int {
 		input = append(input, ints)
 	}
 	return input
+}
+
+func PrintIntGrid(grid [][]int) {
+	fmt.Printf("--Printed Grid--\n")
+	for _, line := range grid {
+		for _, num := range line {
+			fmt.Printf("%d ", num)
+		}
+		fmt.Printf("\n")
+	}
 }

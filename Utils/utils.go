@@ -163,6 +163,10 @@ func SliceContainsString(slice []string, s string) bool {
 	return false
 }
 
+//Finds index of string in slice
+//@param slice -- slice to look in
+//@param s -- string to look for
+//@return index of string in slice, -1 if not found
 func SliceIndexOfStr(slice []string, s string) int {
 	for i, a := range slice {
 		if a == s {

@@ -44,3 +44,24 @@ func (p Point) InPointSlice(s []Point) bool {
 	}
 	return false
 }
+
+//Checks if point lies within the bounds (inclusive)
+//@param xMin -- min x value
+//@param xMax -- max x value
+//@param yMin -- min y value
+//@param yMax -- max y value
+//@return true if in bounds
+func (p Point) InBounds(xMin int, xMax int, yMin int, yMax int) bool {
+	if p.X < xMin || p.X > xMax || p.Y < yMin || p.Y > yMax {
+		return false
+	}
+	return true
+}
+
+//Checks if point lies within the bounds of (0,0) to (x, y)
+//@param x -- max x value
+//@param y -- max y value
+//@return true if in bounds
+func (p Point) InPositiveBounds(x int, y int) bool {
+	return p.InBounds(0, x, 0, y)
+}
