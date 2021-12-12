@@ -17,27 +17,26 @@ func Run() {
 
 	part1total := 0
 	//get input
-	numInput := Utils.ReadInputToIntGrid("Days/Day9/testInput.txt", "")
+	numInput := Utils.ReadInputToIntGrid("Days/Day9/input.txt", "")
 
-	//Part 2
-	var maxes []int
-	var basinIds Utils.IntStack
-	basin := make(map[Utils.Point]int)
-	basinFillCount := make(map[int]int)
+	//Part 2 setup
+	var visited [][]int
+	for y, yline := range numInput{
+		visited = append(visited, []int{})
+		for _ = range yline {
+			visited[y] = append(visited[y], 0)
+		}
+	}
+	basinIds := make(map[int]int)
+	currId := 1
 
 	for y, yLine := range numInput {
 		for x, num := range yLine {
 			islowest := true
-			point := Utils.Point{X: x, Y: y}
-			basinId := -1
+
 			if up := y - 1; up >= 0 {
 				upNum := numInput[up][x]
 				if upNum <= num { islowest = false }
-				if upNum != 9 {
-					if bVal, exists := basin[point.Add(0, -1)]; exists {
-						basinId = bVal
-					}
-				}
 			}
 			if down := y + 1; down < len(numInput) {
 				if numInput[down][x] <= num { islowest = false }
@@ -45,60 +44,51 @@ func Run() {
 			if left := x - 1; left >= 0 {
 				leftNum := yLine[left]
 				if leftNum <= num { islowest = false }
-				if leftNum != 9 {
-					if bVal, exists := basin[point.Add(-1, 0)]; exists {
-						basinId = bVal
-					}
-				}
-
 			}
 			if right := x + 1; right < len(yLine) {
 				rightNum := yLine[right]
 				if rightNum <= num { islowest = false }
-				for right < len(yLine) {
-					if yLine[right] != 9 {
-						if bVal, exists := basin[Utils.Point{X: right, Y: y - 1}]; exists {
-							basinId = bVal
-							break
-						}
-					} else { break }
-					right++
-				}
 			}
 			if islowest { part1total += num + 1 }
 
 			//Part 2
-			//create new basinId if needed
-			if num == 9 { continue }
-			if basinId == -1 {
-				max, err := basinIds.Max()
-				if err == nil { basinId = max + 1 } else { basinId = 1}
-				basinIds.Push(basinId)
+			point := Utils.Point{X: x, Y: y}
+			if num != 9 && visited[y][x] == 0 {
+				basinIds[currId] = flood(point, numInput, visited)
+				currId++
 			}
-			//add point to map
-			basin[point] = basinId
-			//add count to basin fill count
-			prevVal, _ := basinFillCount[basinId]
-			basinFillCount[basinId] = prevVal + 1
-			//fmt.Printf("Point: %s\tBasin Id: %d\tFill Level: %d\n", point,  basinId, basinFillCount[basinId])
 		}
 	}
 
-	for _, fillVal := range basinFillCount {
-		//fmt.Printf("Attempting to add %d...", fillVal)
-		maxes = append(maxes, fillVal)
+	var maxes []int
+	for _, num := range basinIds {
+		maxes = append(maxes, num)
 		sort.Ints(maxes)
 		if len(maxes) > 3 {
-			maxes = maxes[1:len(maxes)]
+			maxes = maxes[1:4]
 		}
-		//fmt.Printf("\t%v\n", maxes)
 	}
 
-	product := 1
-	for _, val := range maxes { product *= val }
-
-	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, product)
+	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, Utils.ProductOfIntSlice(maxes))
 }
+
+func flood(start Utils.Point, inputMap [][]int, visited [][]int) int {
+	if start.Y < 0 || start.Y >= len(inputMap) { return 0 }
+	if start.X < 0 || start.X >= len(inputMap[start.Y]) { return 0 }
+	if inputMap[start.Y][start.X] == 9 {
+		visited[start.Y][start.X] = 8
+		return 0
+	}
+	if visited[start.Y][start.X] > 0 { return 0 }
+	visited[start.Y][start.X] = 1
+	size := 1
+	size += flood(start.Add(0, 1), inputMap, visited)
+	size += flood(start.Add(0, -1), inputMap, visited)
+	size += flood(start.Add(1, 0), inputMap, visited)
+	size += flood(start.Add(-1, 0), inputMap, visited)
+	return size
+}
+
 
 
 

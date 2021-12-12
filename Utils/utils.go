@@ -138,3 +138,14 @@ func NumMatchingChars(a string, b string) int  {
 	}
 	return matches
 }
+
+//Calculates the product of the ints in the slice
+//@param slice -- slice to calc with
+//@return product of slice values
+func ProductOfIntSlice(slice []int) int {
+	product := 1
+	for _, num := range slice {
+		product *= num
+	}
+	return product
+}
