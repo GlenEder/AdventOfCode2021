@@ -149,3 +149,25 @@ func ProductOfIntSlice(slice []int) int {
 	}
 	return product
 }
+
+//Checks for the string in the given slice
+//@param slice -- string slice to look in
+//@param s -- string to look for
+//@return true if in slice, false otherwise
+func SliceContainsString(slice []string, s string) bool {
+	for _, a := range slice {
+		if a == s {
+			return true
+		}
+	}
+	return false
+}
+
+func SliceIndexOfStr(slice []string, s string) int {
+	for i, a := range slice {
+		if a == s {
+			return i
+		}
+	}
+	return -1
+}

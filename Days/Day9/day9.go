@@ -60,7 +60,7 @@ func Run() {
 
 	sort.Ints(basinSizes)
 	basinSizes = basinSizes[len(basinSizes) - 3:]
-	
+
 	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, Utils.ProductOfIntSlice(basinSizes))
 }
 
