@@ -27,8 +27,7 @@ func Run() {
 			visited[y] = append(visited[y], 0)
 		}
 	}
-	basinIds := make(map[int]int)
-	currId := 1
+	var basinSizes []int
 
 	for y, yLine := range numInput {
 		for x, num := range yLine {
@@ -54,22 +53,15 @@ func Run() {
 			//Part 2
 			point := Utils.Point{X: x, Y: y}
 			if num != 9 && visited[y][x] == 0 {
-				basinIds[currId] = flood(point, numInput, visited)
-				currId++
+				basinSizes = append(basinSizes, flood(point, numInput, visited))
 			}
 		}
 	}
 
-	var maxes []int
-	for _, num := range basinIds {
-		maxes = append(maxes, num)
-		sort.Ints(maxes)
-		if len(maxes) > 3 {
-			maxes = maxes[1:4]
-		}
-	}
-
-	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, Utils.ProductOfIntSlice(maxes))
+	sort.Ints(basinSizes)
+	basinSizes = basinSizes[len(basinSizes) - 3:]
+	
+	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, Utils.ProductOfIntSlice(basinSizes))
 }
 
 func flood(start Utils.Point, inputMap [][]int, visited [][]int) int {
