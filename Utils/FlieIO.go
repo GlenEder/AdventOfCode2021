@@ -3,6 +3,7 @@ package Utils
 import (
 	"bufio"
 	"os"
+	"strings"
 )
 
 //Opens the file at path provided
@@ -81,4 +82,24 @@ func ToIntSlice(strs []string) []int {
 		ints = append(ints, StringToInt(s))
 	}
 	return ints
+}
+
+//Reads the file to an double int slice
+//@param filepath -- path to input file
+//@param delimit -- how the numbers are separated
+//@return double int slice of input values
+func ReadInputToIntGrid(filepath string, delimit string) [][]int {
+	f := OpenFile(filepath)
+	scan := bufio.NewScanner(f)
+	var input [][]int
+	for scan.Scan() {
+		inLine := scan.Text()
+		intstrings := strings.Split(inLine, delimit)
+		var ints []int
+		for _, num := range intstrings {
+			ints = append(ints, StringToInt(num))
+		}
+		input = append(input, ints)
+	}
+	return input
 }

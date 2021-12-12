@@ -35,3 +35,12 @@ func (p Point) String() string {
 	return fmt.Sprintf("(%d, %d)", p.X, p.Y)
 }
 
+//Checks if the point is in the point slice
+//@param s -- point slice to check in
+//@return true if in, otherwise false
+func (p Point) InPointSlice(s []Point) bool {
+	for _, point := range s {
+		if p == point { return true }
+	}
+	return false
+}
