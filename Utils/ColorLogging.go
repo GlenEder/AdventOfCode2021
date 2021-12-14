@@ -31,6 +31,29 @@ func PrintWithColor(c int, s string) {
 	ResetOutputColor()
 }
 
+//Prints the formatted string with color
+//@param c -- color to print in
+//@param s -- formatted string to print
+//@param a -- args for string
+func PrintWithColorf(c int, s string, a ...interface{}) {
+	SetOutputColor(c)
+	fmt.Printf(s, a...)
+	ResetOutputColor()
+}
+
+
+//Prints with desired tabs placed in front of string in color
+//@param c -- color to print in
+//@param depth -- number of tabs to add
+//@param s -- string formatting
+//@param a -- args for string
+func PrintRecursionLogColorf(c int, depth int, s string, a ...interface{}) {
+	for i := 0; i < depth; i++ {
+		fmt.Printf("\t")
+	}
+	PrintWithColorf(c, s, a...)
+}
+
 //Prints provided string in red color
 //@param s -- error to print
 func PrintError(s string) {

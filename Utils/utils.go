@@ -1,9 +1,9 @@
 package Utils
 
 import (
+	"fmt"
 	"math"
 	"strconv"
-	"strings"
 )
 
 //PrintDay prints the string ===Day n=== to console in color
@@ -124,20 +124,6 @@ func MaxInt(a int, b int) int {
 	return b
 }
 
-//Finds the number of matching chars between the two strings
-//@param a -- first string
-//@param b -- second string
-//@return number of matching chars
-func NumMatchingChars(a string, b string) int  {
-	matches := 0
-	bChars := []rune(b)
-	for i := range bChars {
-		if strings.Contains(a, string(bChars[i])) {
-			matches++
-		}
-	}
-	return matches
-}
 
 //Calculates the product of the ints in the slice
 //@param slice -- slice to calc with
@@ -150,28 +136,13 @@ func ProductOfIntSlice(slice []int) int {
 	return product
 }
 
-//Checks for the string in the given slice
-//@param slice -- string slice to look in
-//@param s -- string to look for
-//@return true if in slice, false otherwise
-func SliceContainsString(slice []string, s string) bool {
-	for _, a := range slice {
-		if a == s {
-			return true
-		}
+//Prints with desired tabs placed in front of string
+//@param depth -- number of tabs to add
+//@param s -- string formatting
+//@param a -- args for string
+func PrintRecursionLogf(depth int, s string, a ...interface{}) {
+	for i := 0; i < depth; i++ {
+		fmt.Printf("\t")
 	}
-	return false
-}
-
-//Finds index of string in slice
-//@param slice -- slice to look in
-//@param s -- string to look for
-//@return index of string in slice, -1 if not found
-func SliceIndexOfStr(slice []string, s string) int {
-	for i, a := range slice {
-		if a == s {
-			return i
-		}
-	}
-	return -1
+	fmt.Printf(s, a...)
 }
