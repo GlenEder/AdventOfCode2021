@@ -62,6 +62,21 @@ func PrintError(s string) {
 	ResetOutputColor()
 }
 
+
+func PrintGridWithHighlights(grid [][]int, highlights []Point) {
+	for y, line := range grid {
+		for x, num := range line {
+			p := Point{X: x, Y: y}
+			if p.InPointSlice(highlights) {
+				PrintWithColorf(Green, "%d", num)
+			} else {
+				fmt.Printf("%d", num)
+			}
+		}
+		fmt.Printf("\n")
+	}
+}
+
 //Sets output color in terminal
 //@param c -- color int to use (see const defined at top of utils.go)
 func SetOutputColor(c int)  {

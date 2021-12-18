@@ -65,3 +65,18 @@ func (p Point) InBounds(xMin int, xMax int, yMin int, yMax int) bool {
 func (p Point) InPositiveBounds(x int, y int) bool {
 	return p.InBounds(0, x, 0, y)
 }
+
+//Calculates the manhattan distance between the point and the x,y cord provided
+//@param x -- x value of end point
+//@param y -- y value of end point
+//@return manhattan distance
+func (p Point) ManhattanDistance(x int, y int) int {
+	return AbsInt(p.X - x) + AbsInt(p.Y - y)
+}
+
+//Calculates the manhattan distance between the point and the x,y cord provided
+//@param p2 -- end point
+//@return manhattan distance
+func (p Point) ManhattanDistanceFromPoint(p2 Point) int {
+	return p.ManhattanDistance(p2.X, p2.Y)
+}
