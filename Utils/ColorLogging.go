@@ -3,23 +3,23 @@ package Utils
 import "fmt"
 
 const (
-	colorReset = "\033[0m"
-	colorRed = "\033[31m"
-	colorGreen = "\033[32m"
+	colorReset  = "\033[0m"
+	colorRed    = "\033[31m"
+	colorGreen  = "\033[32m"
 	colorYellow = "\033[33m"
-	colorBlue = "\033[34m"
+	colorBlue   = "\033[34m"
 	colorPurple = "\033[35m"
-	colorCyan = "\033[36m"
-	colorWhite = "\033[37m"
+	colorCyan   = "\033[36m"
+	colorWhite  = "\033[37m"
 
 	ColorReset = 0
-	Red = 1
-	Green = 2
-	Yellow = 3
-	Blue = 4
-	Purple = 5
-	Cyan = 6
-	White = 7
+	Red        = 1
+	Green      = 2
+	Yellow     = 3
+	Blue       = 4
+	Purple     = 5
+	Cyan       = 6
+	White      = 7
 )
 
 //Prints the string provided in color provided
@@ -41,7 +41,6 @@ func PrintWithColorf(c int, s string, a ...interface{}) {
 	ResetOutputColor()
 }
 
-
 //Prints with desired tabs placed in front of string in color
 //@param c -- color to print in
 //@param depth -- number of tabs to add
@@ -62,6 +61,11 @@ func PrintError(s string) {
 	ResetOutputColor()
 }
 
+func PrintErrorf(s string, a ...interface{}) {
+	SetOutputColor(Red)
+	fmt.Printf(s, a...)
+	ResetOutputColor()
+}
 
 func PrintGridWithHighlights(grid [][]int, highlights []Point) {
 	for y, line := range grid {
@@ -79,7 +83,7 @@ func PrintGridWithHighlights(grid [][]int, highlights []Point) {
 
 //Sets output color in terminal
 //@param c -- color int to use (see const defined at top of utils.go)
-func SetOutputColor(c int)  {
+func SetOutputColor(c int) {
 	switch c {
 	case Red:
 		fmt.Print(colorRed)
