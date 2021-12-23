@@ -16,16 +16,20 @@ func Run() {
 	binary := Utils.HexToBinary(input)
 	//fmt.Printf("%s\n", binary)
 
-	part2total, _, part1total := evalPacket(binary, 0)
+	part2total, _, part1total := evalPacket(binary, -1, 0)
+	if len(part2total) > 1 {
+		Utils.PrintErrorf("More than 1 number left in part 2 eval list\n")
+	}
 	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, part2total[0])
 }
 
-func evalPacket(binary string, depth int) ([]int, int, int) {
-	Utils.PrintRecursionLogColorf(Utils.Yellow, depth, "Starting eval of: %s\n", binary)
+func evalPacket(binary string, packetsToSolve int, depth int) ([]int, int, int) {
+	//Utils.PrintRecursionLogColorf(Utils.Yellow, depth, "Starting eval of %d packets: %s\n", packetsToSolve, binary)
 	toReturn := []int{}
 	part1Return := 0
+	packetsSolved := 0
 	i := 0
-	for i+6 < len(binary) {
+	for i+6 < len(binary) && packetsSolved != packetsToSolve {
 		//check for only 0's left
 		if Utils.BinaryToInt(binary[i:]) == 0 {
 			i = -1 //signal packet is done
@@ -38,12 +42,13 @@ func evalPacket(binary string, depth int) ([]int, int, int) {
 		//calc part 1
 		part1Return += version
 
-		Utils.PrintRecursionLogf(depth, "version: %d\ttype id:%d\tdata:%s\n", version, typeId, binary[i+6:])
+		//Utils.PrintRecursionLogf(depth, "version: %d\ttype id:%d\tdata:%s\n", version, typeId, binary[i+6:])
 
 		if typeId == 4 {
 			val, len := evalLiteral(binary[i+6:], depth)
 			toReturn = append(toReturn, val)
 			i += len + 6
+			packetsSolved++
 		} else {
 			var subNumbers []int
 			//Handle operator
@@ -53,9 +58,9 @@ func evalPacket(binary string, depth int) ([]int, int, int) {
 				frontOfPack := i + 7
 				endOfPack := frontOfPack + 11
 				numPacks := Utils.BinaryToInt(binary[frontOfPack:endOfPack])
-				Utils.PrintRecursionLogf(depth, "Number of subpackets: %d\n", numPacks)
-				for j := 0; j < numPacks; j++ {
-					toAdd, len, part1 := evalPacket(binary[endOfPack:], depth+1)
+				//Utils.PrintRecursionLogf(depth, "Number of subpackets: %d\n", numPacks)
+				{
+					toAdd, len, part1 := evalPacket(binary[endOfPack:], numPacks, depth+1)
 					subNumbers = append(subNumbers, toAdd...)
 					endOfPack += len
 					part1Return += part1
@@ -65,8 +70,8 @@ func evalPacket(binary string, depth int) ([]int, int, int) {
 				//the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 				//Utils.PrintWithColorf(Utils.Yellow, "Defined supacket length found\n")
 				subpackLen := Utils.BinaryToInt(binary[i+7 : i+22])
-				Utils.PrintRecursionLogf(depth, "subpacket length: %d\n", subpackLen)
-				toAdd, _, part1 := evalPacket(binary[i+22:i+22+subpackLen], depth+1)
+				//Utils.PrintRecursionLogf(depth, "subpacket length: %d\n", subpackLen)
+				toAdd, _, part1 := evalPacket(binary[i+22:i+22+subpackLen], -1, depth+1)
 				subNumbers = append(subNumbers, toAdd...)
 				part1Return += part1
 				//TODO calc i advancement
@@ -78,7 +83,7 @@ func evalPacket(binary string, depth int) ([]int, int, int) {
 			toReturn = append(toReturn, eval)
 		}
 	}
-	Utils.PrintRecursionLogf(depth, "Returning: %v\n", toReturn)
+	//Utils.PrintRecursionLogf(depth, "Returning: %v\n", toReturn)
 	return toReturn, i, part1Return
 }
 
@@ -95,12 +100,15 @@ func evalLiteral(binary string, depth int) (int, int) {
 		pos += 5
 	}
 	toReturn := Utils.BinaryToInt(decoded)
-	Utils.PrintRecursionLogColorf(Utils.Cyan, depth, "decoded: %s, %d\n", decoded, toReturn)
+	//Utils.PrintRecursionLogColorf(Utils.Cyan, depth, "decoded: %s, %d\n", decoded, toReturn)
 	return toReturn, pos
 }
 
 func evalType(typeId int, toCombine []int, depth int) int {
-	Utils.PrintRecursionLogf(depth, "Evaling type: %d, w/ %v\n", typeId, toCombine)
+	//tils.PrintRecursionLogf(depth, "Evaling type: %d, w/ %v\n", typeId, toCombine)
+	if typeId >= 5 && len(toCombine) > 2 {
+		Utils.PrintErrorf("More than 2 numbers in toCombine for comparisson op: %v\n", toCombine)
+	}
 	switch typeId {
 	case 0:
 		return Utils.SumOfIntSlice(toCombine)
