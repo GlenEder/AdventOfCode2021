@@ -9,85 +9,80 @@ func Run() {
 	Utils.PrintDay(16)
 
 	//get input
-	input := Utils.ReadInputAsString("Days/Day16/testInput5.txt")
+	input := Utils.ReadInputAsString("Days/Day16/input.txt")
 	input = Utils.RemoveWhiteSpace(input)
 	//fmt.Printf("Decoding %s\n", input)
 	//convert from hex to binary
 	binary := Utils.HexToBinary(input)
 	//fmt.Printf("%s\n", binary)
 
-	part2total, _, part1total := evalPacket(binary, -1, 0)
-	if len(part2total) > 1 {
-		Utils.PrintErrorf("More than 1 number left in part 2 eval list\n")
-	}
-	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1total, part2total[0])
+	part1, part2, _ := eval(binary, 0)
+	fmt.Printf("Part 1: %d\nPart 2: %d\n", part1, part2)
 }
 
-func evalPacket(binary string, packetsToSolve int, depth int) ([]int, int, int) {
-	//Utils.PrintRecursionLogColorf(Utils.Yellow, depth, "Starting eval of %d packets: %s\n", packetsToSolve, binary)
-	toReturn := []int{}
-	part1Return := 0
-	packetsSolved := 0
-	i := 0
-	for i+6 < len(binary) && packetsSolved != packetsToSolve {
-		//check for only 0's left
-		if Utils.BinaryToInt(binary[i:]) == 0 {
-			i = -1 //signal packet is done
-			break
-		}
+func eval(binary string, pos int) (int, int, int) {
 
-		//Split into sections
-		version := Utils.BinaryToInt(binary[i : i+3])
-		typeId := Utils.BinaryToInt(binary[i+3 : i+6])
-		//calc part 1
-		part1Return += version
+	if Utils.BinaryToInt(binary[pos:]) == 0 {
+		return 0, 0, pos
+	}
 
-		//Utils.PrintRecursionLogf(depth, "version: %d\ttype id:%d\tdata:%s\n", version, typeId, binary[i+6:])
+	//Get version number
+	version := Utils.BinaryToInt(binary[pos : pos+3])
+	//add version for part 1
+	part1 := version
+	//get type id
+	typeId := Utils.BinaryToInt(binary[pos+3 : pos+6])
+	pos += 6
 
-		if typeId == 4 {
-			val, len := evalLiteral(binary[i+6:], depth)
-			toReturn = append(toReturn, val)
-			i += len + 6
-			packetsSolved++
-		} else {
-			var subNumbers []int
-			//Handle operator
-			lengthType := binary[i+6 : i+7]
-			if lengthType == "1" {
-				//the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
-				frontOfPack := i + 7
-				endOfPack := frontOfPack + 11
-				numPacks := Utils.BinaryToInt(binary[frontOfPack:endOfPack])
-				//Utils.PrintRecursionLogf(depth, "Number of subpackets: %d\n", numPacks)
-				{
-					toAdd, len, part1 := evalPacket(binary[endOfPack:], numPacks, depth+1)
-					subNumbers = append(subNumbers, toAdd...)
-					endOfPack += len
-					part1Return += part1
+	//handle literal
+	if typeId == 4 {
+		val, dist := evalLiteral(binary[pos:])
+		pos += dist
+		//return evaled literal data
+		return part1, val, pos
+	} else {
+		//Get length id
+		lenID := Utils.BinaryToInt(binary[pos : pos+1])
+		pos++
+
+		var subVals []int
+
+		//Handle 15 bit version
+		if lenID == 0 {
+			subPackLen := Utils.BinaryToInt(binary[pos : pos+15])
+			pos += 15
+			start := pos
+			for {
+				p1Add, subval, newPos := eval(binary, pos)
+				part1 += p1Add
+				subVals = append(subVals, subval)
+				pos = newPos
+				if pos-start >= subPackLen {
+					break
 				}
-				i = endOfPack
-			} else {
-				//the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
-				//Utils.PrintWithColorf(Utils.Yellow, "Defined supacket length found\n")
-				subpackLen := Utils.BinaryToInt(binary[i+7 : i+22])
-				//Utils.PrintRecursionLogf(depth, "subpacket length: %d\n", subpackLen)
-				toAdd, _, part1 := evalPacket(binary[i+22:i+22+subpackLen], -1, depth+1)
-				subNumbers = append(subNumbers, toAdd...)
-				part1Return += part1
-				//TODO calc i advancement
-				i += 22 + subpackLen
 			}
 
-			//perform eval
-			eval := evalType(typeId, subNumbers, depth)
-			toReturn = append(toReturn, eval)
+		} else {
+			//Handle 11 bit version
+			numSubpacks := Utils.BinaryToInt(binary[pos : pos+11])
+			pos += 11
+			for i := 0; i < numSubpacks; i++ {
+				p1Add, subval, newPos := eval(binary, pos)
+				part1 += p1Add
+				subVals = append(subVals, subval)
+				pos = newPos
+
+			}
 		}
+
+		//Eval on type
+		eval := evalType(typeId, subVals)
+		//fmt.Printf("Evaled type %d on %v = %d\n", typeId, subVals, eval)
+		return part1, eval, pos
 	}
-	//Utils.PrintRecursionLogf(depth, "Returning: %v\n", toReturn)
-	return toReturn, i, part1Return
 }
 
-func evalLiteral(binary string, depth int) (int, int) {
+func evalLiteral(binary string) (int, int) {
 	//Literal value
 	decoded := ""
 	reading := true
@@ -99,16 +94,14 @@ func evalLiteral(binary string, depth int) (int, int) {
 		decoded += binary[pos+1 : pos+5]
 		pos += 5
 	}
+
 	toReturn := Utils.BinaryToInt(decoded)
-	//Utils.PrintRecursionLogColorf(Utils.Cyan, depth, "decoded: %s, %d\n", decoded, toReturn)
+	//Utils.PrintWithColorf(Utils.Green, "decoded: %d\n", toReturn)
 	return toReturn, pos
 }
 
-func evalType(typeId int, toCombine []int, depth int) int {
-	//tils.PrintRecursionLogf(depth, "Evaling type: %d, w/ %v\n", typeId, toCombine)
-	if typeId >= 5 && len(toCombine) > 2 {
-		Utils.PrintErrorf("More than 2 numbers in toCombine for comparisson op: %v\n", toCombine)
-	}
+func evalType(typeId int, toCombine []int) int {
+
 	switch typeId {
 	case 0:
 		return Utils.SumOfIntSlice(toCombine)
