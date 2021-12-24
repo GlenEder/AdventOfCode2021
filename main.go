@@ -11,6 +11,7 @@ import (
 	"src/Days/Day14"
 	"src/Days/Day15"
 	"src/Days/Day16"
+	"src/Days/Day17"
 	"src/Days/Day2"
 	"src/Days/Day3"
 	"src/Days/Day4"
@@ -28,9 +29,11 @@ func main() {
 	//Retrieve args
 	daysToRun := os.Args[1:]
 	runAll := true
-	if len(daysToRun) > 0 { runAll = false }
+	if len(daysToRun) > 0 {
+		runAll = false
+	}
 
-		days := []interface{}{
+	days := []interface{}{
 		Day1.Run,
 		Day2.Run,
 		Day3.Run,
@@ -47,14 +50,15 @@ func main() {
 		Day14.Run,
 		Day15.Run,
 		Day16.Run,
+		Day17.Run,
 	}
 
 	now := time.Now()
 	for i, day := range days {
-		if runAll || Utils.SliceContainsString(daysToRun, Utils.IntToString(i + 1)) {
+		if runAll || Utils.SliceContainsString(daysToRun, Utils.IntToString(i+1)) {
 			method := reflect.ValueOf(day)
 			method.Call(nil)
 		}
 	}
-	Utils.PrintWithColor(Utils.Yellow, "\nTime to compute: " + time.Since(now).String() + "\n")
+	Utils.PrintWithColor(Utils.Yellow, "\nTime to compute: "+time.Since(now).String()+"\n")
 }
